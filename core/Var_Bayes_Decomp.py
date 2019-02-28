@@ -47,14 +47,12 @@ def VB_Decomp(M:Union[csr_matrix,np.ndarray],rank:int,maxiter:int=100)->Tuple[np
         # update Q(u_i)
         for i in range(0,I):
             outer=np.zeros((n,n))
-            N_i=N[i]
-            for j in N_i:
+            for j in N[i]:
                 outer+=np.outer(v_bar[j],v_bar[j])
-            Phi[i]=np.linalg.inv(np.diag(1/sigma_sq)+(Psi[N_i].sum(0)+outer)/tau_sq)
-            mtplr=((M[i,N_i]*(v_bar[N_i]))/tau_sq).sum(0)
-            u_bar[i]=Phi[i].dot(mtplr)
-            S[N_i]+=(Phi[i]+np.outer(u_bar[i],u_bar[i]))/tau_sq
-            t[N_i]+=(np.outer(csr_matrix.toarray(M[i,N_i]),(u_bar[i]))/tau_sq)
+            Phi[i]=np.linalg.inv(np.diag(1/sigma_sq)+(Psi[N[i]].sum(0)+outer)/tau_sq)
+            u_bar[i]=Phi[i].dot(((M[i,N[i]]*(v_bar[N[i]]))/tau_sq).sum(0))
+            S[N[i]]+=(Phi[i]+np.outer(u_bar[i],u_bar[i]))/tau_sq
+            t[N[i]]+=(np.outer(csr_matrix(M[i,N[i]]).toarray(),(u_bar[i]))/tau_sq)
 
         #update Q(v_j)
         Psi=np.linalg.inv(S)
@@ -71,7 +69,7 @@ def VB_Decomp(M:Union[csr_matrix,np.ndarray],rank:int,maxiter:int=100)->Tuple[np
             A = Phi[i] + np.outer(u_bar[i], u_bar[i])
             B = Psi[j] + np.outer(v_bar[j], v_bar[j])
             Tr+=np.trace(A.dot(B))
-        tau_sq=(((ob[2] ** 2) - (2 * ob[2] * np.einsum('ij,ij->i',u_bar[ob[0]],v_bar[ob[1]]))).sum()+Tr)/(K-1)
+        tau_sq=(((ob[2]**2)-(2*ob[2]*np.einsum('ij,ij->i',u_bar[ob[0]],v_bar[ob[1]]))).sum()+Tr)/(K-1)
 
 	# calc norm
         cur_norm_u=np.linalg.norm(u_bar)
