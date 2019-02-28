@@ -40,7 +40,7 @@ def VB_Decomp(M:Union[csr_matrix,np.ndarray],rank:int,maxiter:int=100)->Tuple[np
         N.append(scipy.sparse.find(M[i])[1])
     ob = scipy.sparse.find(M)
 
-	#--------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------
     # EM iteration
     for iter in range(0,maxiter):
     # E step

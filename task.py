@@ -9,7 +9,7 @@ part1_rank=3
 
 with open(dataset) as f:
     line=f.readline()
-    I,J,K=map(int,line.split()) # user, item, total numbers
+    I,J,K=map(int,line.split()) # number of users, items, scores
     M=lil_matrix((I,J))
     testset=[]
     half=int(K/2)
